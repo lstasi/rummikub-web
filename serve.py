@@ -13,8 +13,21 @@ import webbrowser
 from pathlib import Path
 
 def main():
+    # Handle help
+    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
+        print("🎲 Rummikub Web Server")
+        print("Usage: python3 serve.py [port]")
+        print("Default port: 8080")
+        print("Example: python3 serve.py 3000")
+        return
+    
     # Get port from command line or use default
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
+    try:
+        port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
+    except ValueError:
+        print("❌ Error: Port must be a number")
+        print("Usage: python3 serve.py [port]")
+        sys.exit(1)
     
     # Change to the directory containing this script
     os.chdir(Path(__file__).parent)
