@@ -53,7 +53,7 @@ A modern, mobile-optimized web frontend for the Rummikub tile game. Built as a s
 
 3. **Play the game:**
    - Enter your name and the backend URL (default: `http://localhost:8000`)
-   - Either join an existing game with an invite code or create a new one
+   - Either join an existing game with a Game ID or create a new one
    - Start playing! The game supports real-time multiplayer
 
 ## Game Interface
@@ -61,7 +61,7 @@ A modern, mobile-optimized web frontend for the Rummikub tile game. Built as a s
 ### Setup Screen
 - **Backend URL**: Configure the API server address
 - **Player Name**: Enter your display name
-- **Invite Code**: Join existing games or get one when creating
+- **Game ID**: Join existing games using the unique game identifier
 
 ### Game Screen
 - **Game Info Panel**: Shows current player, game status, and players list
@@ -86,6 +86,21 @@ A modern, mobile-optimized web frontend for the Rummikub tile game. Built as a s
 - `index.html` - Complete Rummikub game (single file)
 - `rules.html` - Game rules reference page
 - `README.md` - Documentation
+
+## Backend Integration
+
+This frontend is designed to work with the [rummikub-backend](https://github.com/lstasi/rummikub-backend) API server.
+
+### Authentication
+- **Game Creation**: Uses Basic Auth with admin credentials (`admin:rummikub2024`)
+- **Game Play**: Uses JWT Bearer tokens obtained when joining a game
+- **Session Management**: Automatic token-based authentication for all game actions
+
+### API Endpoints Used
+- `POST /game` - Create new games
+- `POST /game/{game_id}/join` - Join games with Game ID
+- `GET /game/{game_id}` - Get game state (requires Bearer token)
+- `POST /game/{game_id}/action` - Perform game actions (requires Bearer token)
 
 ## Browser Compatibility
 
