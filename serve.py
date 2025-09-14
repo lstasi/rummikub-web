@@ -47,7 +47,7 @@ def main():
         print(f"🎲 Rummikub Web Server")
         print(f"📡 Serving at: http://localhost:{port}")
         print(f"📱 Mobile-optimized Rummikub game ready!")
-        print(f"💡 Make sure rummikub-backend is running on port 8000")
+        print(f"💡 Make sure rummikub-backend is running on port 8090")
         print(f"🛑 Press Ctrl+C to stop")
         print()
         

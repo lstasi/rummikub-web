@@ -52,7 +52,7 @@ A modern, mobile-optimized web frontend for the Rummikub tile game. Built as a s
    ```
 
 3. **Play the game:**
-   - Enter your name and the backend URL (default: `http://localhost:8000`)
+   - Enter your name and the backend URL (default: `http://localhost:8090`)
    - Either join an existing game with a Game ID or create a new one
    - Start playing! The game supports real-time multiplayer
 
