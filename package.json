@@ -1,0 +1,32 @@
+{
+  "name": "rummikub-web",
+  "version": "1.0.0",
+  "description": "Mobile-optimized web frontend for Rummikub tile game",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 config.py && python3 serve.py 8080",
+    "serve": "python3 serve.py",
+    "dev": "python3 serve.py 3000",
+    "config": "python3 config.py",
+    "build": "python3 config.py"
+  },
+  "keywords": [
+    "rummikub",
+    "game",
+    "tiles",
+    "web",
+    "mobile",
+    "drag-drop",
+    "multiplayer"
+  ],
+  "author": "Rummikub Web Team",
+  "license": "MIT",
+  "homepage": "https://github.com/lstasi/rummikub-web",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lstasi/rummikub-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lstasi/rummikub-web/issues"
+  }
+}
