@@ -375,9 +375,9 @@
             </div>
 
             <div class="form-group">
-                <label for="invite-code">Invite Code (to join existing game):</label>
-                <input type="text" id="invite-code" placeholder="ABC123" 
-                       style="text-transform: uppercase">
+                <label for="invite-code">Game ID (to join existing game):</label>
+                <input type="text" id="invite-code" placeholder="game-uuid-1234" 
+                       style="text-transform: none">
             </div>
 
             <div class="actions">
@@ -577,7 +577,10 @@
                             'Content-Type': 'application/json',
                             'Authorization': 'Basic ' + btoa('admin:rummikub2024')
                         },
-                        body: JSON.stringify({ max_players: 4 })
+                        body: JSON.stringify({ 
+                            name: this.playerName,
+                            max_players: 4 
+                        })
                     });
 
                     if (!response.ok) {
@@ -587,8 +590,9 @@
                     const data = await response.json();
                     this.gameId = data.game_id;
                     
-                    this.showMessage(`Game created! Invite code: ${data.invite_code}`, 'success');
-                    this.inviteCodeInput.value = data.invite_code;
+                    this.showMessage(`Game created! Game ID: ${data.game_id}`, 'success');
+                    // Store the game ID for joining
+                    this.inviteCodeInput.value = data.game_id;
 
                     // Auto-join the game
                     setTimeout(() => this.joinGame(), 1000);
@@ -602,9 +606,9 @@
             async joinGame() {
                 this.baseUrl = this.backendUrlInput.value.replace(/\/$/, '');
                 this.playerName = this.playerNameInput.value.trim();
-                const inviteCode = this.inviteCodeInput.value.trim().toUpperCase();
+                const gameId = this.inviteCodeInput.value.trim();
 
-                if (!this.baseUrl || !this.playerName || !inviteCode) {
+                if (!this.baseUrl || !this.playerName || !gameId) {
                     this.showMessage('Please fill all fields', 'error');
                     return;
                 }
@@ -612,23 +616,13 @@
                 try {
                     this.showMessage('Joining game...', 'info');
 
-                    // If we don't have gameId, we need to get it somehow
-                    // For now, we'll try to join with the invite code
-                    let gameId = this.gameId;
-                    if (!gameId) {
-                        // We need to find the game by invite code
-                        // For now, let's assume the backend accepts invite codes without game ID
-                        // This might need adjustment based on actual backend behavior
-                        gameId = 'unknown';
-                    }
-
                     const response = await fetch(`${this.baseUrl}/game/${gameId}/join`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            invite_code: inviteCode,
+                            game_id: gameId,
                             player_name: this.playerName
                         })
                     });
@@ -638,8 +632,8 @@
                     }
 
                     const data = await response.json();
-                    this.gameId = data.game_id;
-                    this.sessionId = data.session_id;
+                    this.gameId = gameId;
+                    this.sessionId = data.access_token; // New API returns access_token
                     
                     this.saveToStorage();
                     this.showMessage('Successfully joined game!', 'success');
@@ -668,7 +662,12 @@
 
                 try {
                     const response = await fetch(
-                        `${this.baseUrl}/game/${this.gameId}?session_id=${this.sessionId}`
+                        `${this.baseUrl}/game/${this.gameId}`,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${this.sessionId}`
+                            }
+                        }
                     );
 
                     if (!response.ok) {
@@ -868,11 +867,12 @@
 
                 try {
                     const response = await fetch(
-                        `${this.baseUrl}/game/${this.gameId}/action?session_id=${this.sessionId}`,
+                        `${this.baseUrl}/game/${this.gameId}/action`,
                         {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${this.sessionId}`
                             },
                             body: JSON.stringify({
                                 action_type: 'draw_tile'
@@ -922,11 +922,12 @@
 
                 try {
                     const response = await fetch(
-                        `${this.baseUrl}/game/${this.gameId}/action?session_id=${this.sessionId}`,
+                        `${this.baseUrl}/game/${this.gameId}/action`,
                         {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${this.sessionId}`
                             },
                             body: JSON.stringify({
                                 action_type: 'place_tiles',
